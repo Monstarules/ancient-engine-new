@@ -8220,19 +8220,27 @@ WithdrawMonText:
 	sbc b
 	ldh [hMultiplicand + 1], a
 	ld a, 25
-	ldh [hMultiplier], a
-	call Multiply
-	ld hl, wEnemyMonMaxHP
-	ld a, [hli]
-	ld b, [hl]
-	srl a
-	rr b
-	srl a
-	rr b
-	ld a, b
-	ld b, 4
-	ldh [hDivisor], a
-	call Divide
+	ldh [hMultiplicand + 1], a
+    ld c, 100
+    ld hl, wEnemyMonMaxHP
+    ld a, [hli]
+    ld b, [hl]
+	and a
+	jr z, .shift_done
+.shift
+    rra
+    rr b
+    srl c
+    and a
+    jr nz, .shift
+.shift_done
+    ld a, c
+    ldh [hMultiplier], a
+    call Multiply
+    ld a, b
+    ld b, 4
+    ldh [hDivisor], a
+    call Divide
 	pop bc
 	pop de
 	ldh a, [hQuotient + 3]
